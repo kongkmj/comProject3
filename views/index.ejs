@@ -8,6 +8,7 @@
     <h1>hello</h1>
     <form name ="test" method ="POST" action="/">
       <input type = "submit" id="button" name ="led" value="ON"/>
+      <input type = "submit" id="button" name ="led" value="OFF"/>
     </form>
     <div id="tcpk1"></div>
     <script src="/socket.io/socket.io.js"></script>
@@ -15,9 +16,8 @@
     <script>
     const socket = io.connect("http://localhost:3000");
 
-    socket.on('test',(data)=>{
-      console.log(data);
-      $('#tcpk1').text('<h5 style="color:red;">'+"수신 데이터 : "+data+'</h5>');
+    socket.on('test',(temp,humi)=>{
+      $('#tcpk1').text("기온 : "+temp+ "습도 : "+humi);
     });
     </script>
   </body>
