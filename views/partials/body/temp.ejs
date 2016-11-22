@@ -1,5 +1,4 @@
 <script>
-
   var config1 = {
         type: 'line',
         data: {
@@ -52,6 +51,7 @@
             }
         }
     };
+
 
     var config2 = {
           type: 'line',
@@ -125,6 +125,16 @@
 <script src = "socket.io/socket.io.js"></script>
 <script>
 const socket = io.connect("http://localhost:3000");
+socket.on('Temp',(data,data2)=>{
+  for(var i=0;i<20;i++){
+      config2.data.labels[i]=(data[i].time);
+      config2.data.datasets[0].data[i]=data[i].status;
+      config1.data.labels[i]=(data2[i].time);
+      config1.data.datasets[0].data[i]=data2[i].status;
+    }
+    window.myLine1.update();
+    window.myLine2.update();
+})
 
 socket.on('arduinoTemp',(arduinoTemp)=>{
   console.log('Data from Arduino: '+arduinoTemp);

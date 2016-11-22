@@ -13,11 +13,13 @@
                     <div class="row">
                         <div class="col-xs-3">
                           <div id ="doorLock">
-                            <i class="fa fa-lock fa-5x"></i>
+                            <i class=
+                            "<%=data2%>"
+                            ></i>
                           </div>
                         </div>
                         <div class="col-xs-9 text-right">
-                            <div id="doorText" class="huge">Close</div>
+                            <div id="doorText" class="huge2"><%=data%></div>
                             <div>도어락</div>
                         </div>
                     </div>
@@ -28,7 +30,7 @@
                 </a>
                         <span class="pull-right">
                           <div id ="doorToggle">
-                          <i class="fa fa-toggle-off fa-2x"></i>
+                          <i class="<%=data3%>"></i>
                         </div>
                         </span>
                         <div class="clearfix"></div>
@@ -44,7 +46,7 @@
                             <i class="fa fa-lightbulb-o fa-5x"></i>
                         </div>
                         <div class="col-xs-9 text-right">
-                            <div id="lightText" class="huge">OFF</div>
+                            <div id="lightText" class="huge2"><%=data4%></div>
                             <div>전등</div>
                         </div>
                     </div>
@@ -55,7 +57,7 @@
                 </a>
                         <span class="pull-right">
                           <div id = "lightToggle">
-                          <i class="fa fa-toggle-off fa-2x"></i>
+                          <i class="<%=data5%>"></i>
                         </div>
                         </span>
                         <div class="clearfix"></div>
@@ -71,7 +73,7 @@
                             <i class="fa fa-tachometer fa-5x"></i>
                         </div>
                         <div class="col-xs-9 text-right">
-                            <div id ="tempText" class="huge">실내: 0ºC</div>
+                            <div id ="tempText" class="huge2">실내: 0ºC</div>
                             <div>온도</div>
                         </div>
                     </div>
@@ -93,7 +95,7 @@
                             <i class="glyphicon glyphicon-tint fa-5x"></i>
                         </div>
                         <div class="col-xs-9 text-right">
-                            <div id="humiText" class="huge">실내: 0% </div>
+                            <div id="humiText" class="huge2">실내: 0% </div>
                             <div>습도</div>
                         </div>
                     </div>
@@ -115,7 +117,7 @@
                             <i class="fa fa-plug fa-5x"></i>
                         </div>
                         <div class="col-xs-9 text-right">
-                            <div class="huge">2</div>
+                            <div class="huge2">2</div>
                             <div>전원</div>
                         </div>
                     </div>
@@ -137,7 +139,7 @@
                             <i class="fa fa-asterisk fa-5x"></i>
                         </div>
                         <div class="col-xs-9 text-right">
-                            <div id="airconText" class="huge">OFF</div>
+                            <div id="airconText" class="huge2"><%=data6%></div>
                             <div>에어컨</div>
                         </div>
                     </div>
@@ -148,7 +150,7 @@
                 </a>
                         <span class="pull-right">
                           <div id="airconToggle">
-                          <i class="fa fa-toggle-off fa-2x"></i>
+                          <i class="<%=data7%>"></i>
                         </div>
                         </span>
                         <div class="clearfix"></div>
@@ -164,7 +166,7 @@
                             <i class="fa fa-fire fa-5x"></i>
                         </div>
                         <div class="col-xs-9 text-right">
-                            <div id="gasText" class="huge">0</div>
+                            <div id="gasText" class="huge2">0</div>
                             <div>가스 센서</div>
                         </div>
                     </div>
@@ -187,7 +189,7 @@
                             <i class="glyphicon glyphicon-fire fa-5x"></i>
                         </div>
                         <div class="col-xs-9 text-right">
-                            <div id="fireText" class="huge">정상</div>
+                            <div id="fireText" class="huge2">정상</div>
                             <div>화재 센서</div>
                         </div>
                     </div>
@@ -337,6 +339,7 @@
         <!-- /.col-lg-4 -->
         <script src = "socket.io/socket.io.js"></script>
         <script>
+
          var socket = io.connect("http://localhost:3000");
 
          $('#btn-chat').click(function(){
@@ -380,11 +383,11 @@
          var doorLock = $("#doorLock i");
          var doorText = $("#doorText");
          var doorToggle = $("#doorToggle i");
-         var doorcnt = 0;
+          var doorcnt = false;
 
          doorToggle.click(()=>{
-           doorcnt +=1;
-           if(doorcnt==1){
+           doorcnt = !doorcnt
+           if(doorcnt==true){
              socket.emit("door",doorcnt);
              doorLock.removeClass("fa fa-lock");
              doorLock.addClass("fa fa-unlock");
@@ -392,35 +395,34 @@
              doorToggle.removeClass("fa fa-toggle-off");
              doorToggle.addClass("fa fa-toggle-on")
            }
-           else if(doorcnt==2){
+           else if(doorcnt==false){
              socket.emit("door",doorcnt);
              doorLock.removeClass("fa fa-unlock");
              doorLock.addClass("fa fa-lock");
              doorText.text("CLOSE");
              doorToggle.removeClass("fa fa-toggle-on");
              doorToggle.addClass("fa fa-toggle-off")
-             doorcnt = 0;
+             //doorcnt = 0;
            }
          });
 
          // 전등
          var lightText = $("#lightText");
          var lightToggle = $("#lightToggle i")
-         var lightcnt = 0;
+         var lightcnt = false;
          lightToggle.click(()=>{
-           lightcnt+=1;
-           if(lightcnt==1){
+           lightcnt=!lightcnt;
+           if(lightcnt==true){
              socket.emit("light",lightcnt);
              lightText.text("ON");
              lightToggle.removeClass("fa fa-toggle-off");
              lightToggle.addClass("fa fa-toggle-on");
            }
-           else if(lightcnt==2){
+           else if(lightcnt==false){
              socket.emit("light",lightcnt);
              lightText.text("OFF");
              lightToggle.removeClass("fa fa-toggle-on");
              lightToggle.addClass("fa fa-toggle-off");
-             lightcnt = 0;
            }
 
          })
@@ -428,21 +430,20 @@
          // 에어컨
          var airconText = $("#airconText");
          var airconToggle = $("#airconToggle i");
-         var airconcnt = 0;
+         var airconcnt = false;
          airconToggle.click(()=>{
-           airconcnt+=1;
-           if(airconcnt==1){
+           airconcnt=!airconcnt;
+           if(airconcnt==true){
              socket.emit("aircon",airconcnt);
              airconText.text("ON");
              airconToggle.removeClass("fa fa-toggle-off");
              airconToggle.addClass("fa fa-toggle-on");
            }
-           else if(airconcnt==2){
+           else if(airconcnt==false){
              socket.emit("aircon",airconcnt);
              airconText.text("OFF");
              airconToggle.removeClass("fa fa-toggle-on");
              airconToggle.addClass("fa fa-toggle-off");
-             airconcnt = 0;
            }
 
          })

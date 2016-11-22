@@ -72,6 +72,15 @@
 <script>
 const socket = io.connect("http://localhost:3000");
 
+socket.on('Fire',(data)=>{
+  for(var i=0;i<20;i++){
+
+      config1.data.labels[i]=(data[i].time);
+      config1.data.datasets[0].data[i]=data[i].status;
+    }
+    window.myLine1.update();
+})
+
 socket.on('arduinoFire',(arduinoFire)=>{
   console.log('Data from Arduino: '+arduinoFire);
   if(config1.data.datasets.length>0){
