@@ -12,19 +12,9 @@ const app = express();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
 
-
-var now = new Date();
-var year = now.getFullYear();
-var month = now.getMonth();
-var day = now.getDate();
-var hour = now.getHours();
-var min = now.getMinutes();
-var second = now.getSeconds();
-
 const port =3000;
 const tcpPort= 5000;
 const tcpPort2 = 4444;
-
 
 
 const server = net.createServer((client)=>{
@@ -38,7 +28,7 @@ const server = net.createServer((client)=>{
   client.on('data',(data)=>{
     var now = new Date();
     var year = now.getFullYear();
-    var month = now.getMonth();
+    var month = now.getMonth()+1;
     var day = now.getDate();
     var hour = now.getHours();
     var min = now.getMinutes();
@@ -114,80 +104,16 @@ const server2 = net.createServer((client)=>{
   client.setEncoding('utf8');
   io.on('connection',(socket)=>{
 
-    // 습도 이전데이터
-    HumiIn.find({}).limit(20).sort({date:-1}).exec(function (err,data){
-      var value = new Array(20);
-
-      for(var i=value.length-1, j=0; i>-1;i--,j++){
-        value[j] = data[i];
-      }
-      HumiOut.find({}).limit(20).sort({date:-1}).exec(function (err,data){
-        var value2 = new Array(20);
-
-        for(var i=value.length-1, j=0; i>-1;i--,j++){
-          value2[j] = data[i];
-        }
-        socket.emit("Humi",value,value2);
-      });
-    });
-    // 온도 이전데이터
-    TempIn.find({}).limit(20).sort({date:-1}).exec(function (err,data){
-      var value = new Array(20);
-
-      for(var i=value.length-1, j=0; i>-1;i--,j++){
-        value[j] = data[i];
-      }
-      TempOut.find({}).limit(20).sort({date:-1}).exec(function (err,data){
-        var value2 = new Array(20);
-
-        for(var i=value.length-1, j=0; i>-1;i--,j++){
-          value2[j] = data[i];
-        }
-        socket.emit("Temp",value,value2);
-      });
-    });
-
-    // 가스 이전데이터
-    /*
-    Gas.count({date: /^20161022/},function (err,count){
-      console.log(count);
-    })
-   */
-      Gas.find({}).limit(20).sort({date:-1}).exec(function (err,data){
-        var value = new Array(20);
-
-        for(var i=value.length-1, j=0; i>-1;i--,j++){
-          value[j] = data[i];
-        }
-        socket.emit("Gas",value);
-      });
-
-
-
-
-    // 가스 이전데이터
-      Fire.find({}).limit(20).sort({date:-1}).exec(function (err,data){
-        var value = new Array(20);
-
-        for(var i=value.length-1, j=0; i>-1;i--,j++){
-          value[j] = data[i];
-        }
-        socket.emit("Fire",value);
-      });
-
-
-
     // 도어락 소켓
     socket.on('door',(doorcnt)=>{
-      console.log("count"+doorcnt);
       var now = new Date();
       var year = now.getFullYear();
-      var month = now.getMonth();
+      var month = now.getMonth()+1;
       var day = now.getDate();
       var hour = now.getHours();
       var min = now.getMinutes();
       var second = now.getSeconds();
-      var time =""+year+month+day+hour+min+second;
+      var time =""+year+"년"+month+"월"+day+"일";
 
       if(doorcnt==true){
         var door = new Door({
@@ -201,7 +127,7 @@ const server2 = net.createServer((client)=>{
 
         writeData(client,"1"); // 도어락 OPEN
       }
-      else if(doorcnt==false){
+      else{
         var door = new Door({
           status:'CLOSE',
           icon : "fa fa-lock fa-5x",
@@ -218,12 +144,12 @@ const server2 = net.createServer((client)=>{
     socket.on('light',(lightcnt)=>{
       var now = new Date();
       var year = now.getFullYear();
-      var month = now.getMonth();
+      var month = now.getMonth()+1;
       var day = now.getDate();
       var hour = now.getHours();
       var min = now.getMinutes();
       var second = now.getSeconds();
-      var time =""+year+month+day+hour+min+second;
+      var time =""+year+"년"+month+"월"+day+"일";
 
       if(lightcnt==true){
         var light = new Light({
@@ -236,7 +162,7 @@ const server2 = net.createServer((client)=>{
 
         writeData(client,"3"); // 전등 ON
       }
-      else if(lightcnt==false){
+      else{
         // 전등
         var light = new Light({
           status: 'OFF',
@@ -253,12 +179,12 @@ const server2 = net.createServer((client)=>{
     socket.on('aircon',(airconcnt)=>{
       var now = new Date();
       var year = now.getFullYear();
-      var month = now.getMonth();
+      var month = now.getMonth()+1;
       var day = now.getDate();
       var hour = now.getHours();
       var min = now.getMinutes();
       var second = now.getSeconds();
-      var time =""+year+month+day+hour+min+second;
+      var time =""+year+"년"+month+"월"+day+"일";
 
       if(airconcnt==true){
         var aircon = new Aircon({
@@ -288,24 +214,18 @@ const server2 = net.createServer((client)=>{
   // 데이터 수신시
   client.on('data',(data)=>{
     var now = new Date();
-    var year = now.getFullYear();
-    var month = now.getMonth();
-    var day = now.getDate();
     var hour = now.getHours();
     var min = now.getMinutes();
     var second = now.getSeconds();
-    var time = year+'/'+month+'/'+day+' '+hour+min+second;
-
 
     var raspiData =""+data;
     var raspiArray = raspiData.split(',');
-
 
     // 실내 온도
     var tempIn = new TempIn({
       status: raspiArray[0],
       date : time,
-      time: (hour+":"+min+":"+second)
+      time: (hour+':'+min+':'+second)
     })
     tempIn.save((err,tempIn)=>{})
 
@@ -316,9 +236,6 @@ const server2 = net.createServer((client)=>{
       time: (hour+":"+min+":"+second)
     })
     humiIn.save((err,humiIn)=>{})
-
-
-
 
     console.log("라즈베리파이에서 "+raspiArray);
     io.emit("raspiArray",raspiArray);
@@ -413,7 +330,6 @@ io.on('connection',(socket)=>{
   console.log('a user connected!');
   socket.on('chat message',function (msg) {
     //time
-
     if(hour>=12){
       hour = '오후 '+(hour-12);
     }

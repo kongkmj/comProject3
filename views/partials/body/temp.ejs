@@ -119,22 +119,39 @@
 
   window.onload = function() {
     //html tag가 모두 load 되었을 때
+    var tempInStatus = new Array();
+    var tempInTime = new Array();
+    var tempOutStatus = new Array();
+    var tempOutTime = new Array();
+    <% data.forEach(function(e){ %>
+      tempInStatus.push(<%= e.status %>);
+      tempInTime.push('<%= e.time %>');
+    <%})%>
+    <% data2.forEach(function(e){ %>
+      tempOutStatus.push(<%= e.status %>);
+      tempOutTime.push('<%= e.time %>');
+    <%})%>
+      tempInStatus.reverse();
+      tempInTime.reverse();
+      tempOutStatus.reverse();
+      tempOutTime.reverse();
+      for(var i =0; i<<%=data3%>;i++){
+        config2.data.datasets[0].data.push(tempInStatus[i]);
+        config2.data.labels.push(tempInTime[i]);
+      }
+      for(var i =0; i<<%=data4%>;i++){
+        config1.data.datasets[0].data.push(tempOutStatus[i]);
+        config1.data.labels.push(tempOutTime[i]);
+      }
+
     initChart();
-  };
+
+  }
 </script>
 <script src = "socket.io/socket.io.js"></script>
 <script>
 const socket = io.connect("http://localhost:3000");
-socket.on('Temp',(data,data2)=>{
-  for(var i=0;i<20;i++){
-      config2.data.labels[i]=(data[i].time);
-      config2.data.datasets[0].data[i]=data[i].status;
-      config1.data.labels[i]=(data2[i].time);
-      config1.data.datasets[0].data[i]=data2[i].status;
-    }
-    window.myLine1.update();
-    window.myLine2.update();
-})
+
 
 socket.on('arduinoTemp',(arduinoTemp)=>{
   console.log('Data from Arduino: '+arduinoTemp);

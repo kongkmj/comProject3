@@ -65,21 +65,24 @@
 
   window.onload = function() {
     //html tag가 모두 load 되었을 때
+    var gasStatus = new Array();
+    var gasTime = new Array();
+    <% data.forEach(function(e){ %>
+      gasStatus.push(<%= e.status %>);
+      gasTime.push('<%= e.time %>');
+    <%})%>
+      gasStatus.reverse();
+      gasTime.reverse();
+      for(var i =0; i<<%=data2%>;i++){
+        config1.data.datasets[0].data.push(gasStatus[i]);
+        config1.data.labels.push(gasTime[i]);
+      }
     initChart();
   };
 </script>
 <script src = "socket.io/socket.io.js"></script>
 <script>
 const socket = io.connect("http://localhost:3000");
-
-socket.on('Gas',(data)=>{
-  for(var i=0;i<20;i++){
-
-      config1.data.labels[i]=(data[i].time);
-      config1.data.datasets[0].data[i]=data[i].status;
-    }
-    window.myLine1.update();
-})
 
 socket.on('arduinoGas',(arduinoGas)=>{
   if(config1.data.datasets.length>0){

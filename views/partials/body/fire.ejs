@@ -65,21 +65,24 @@
 
   window.onload = function() {
     //html tag가 모두 load 되었을 때
+    var fireStatus = new Array();
+    var fireTime = new Array();
+    <% data.forEach(function(e){ %>
+      fireStatus.push(<%= e.status %>);
+      fireTime.push('<%= e.time %>');
+    <%})%>
+      fireStatus.reverse();
+      fireTime.reverse();
+      for(var i =0; i<<%=data2%>;i++){
+        config1.data.datasets[0].data.push(fireStatus[i]);
+        config1.data.labels.push(fireTime[i]);
+      }
     initChart();
   };
 </script>
 <script src = "socket.io/socket.io.js"></script>
 <script>
 const socket = io.connect("http://localhost:3000");
-
-socket.on('Fire',(data)=>{
-  for(var i=0;i<20;i++){
-
-      config1.data.labels[i]=(data[i].time);
-      config1.data.datasets[0].data[i]=data[i].status;
-    }
-    window.myLine1.update();
-})
 
 socket.on('arduinoFire',(arduinoFire)=>{
   console.log('Data from Arduino: '+arduinoFire);

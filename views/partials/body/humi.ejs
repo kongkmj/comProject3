@@ -121,24 +121,36 @@
 
   window.onload = function() {
     //html tag가 모두 load 되었을 때
+    var humiInStatus = new Array();
+    var humiInTime = new Array();
+    var humiOutStatus = new Array();
+    var humiOutTime = new Array();
+    <% data.forEach(function(e){ %>
+      humiInStatus.push(<%= e.status %>);
+      humiInTime.push('<%= e.time %>');
+    <%})%>
+    <% data2.forEach(function(e){ %>
+      humiOutStatus.push(<%= e.status %>);
+      humiOutTime.push('<%= e.time %>');
+    <%})%>
+      humiInStatus.reverse();
+      humiInTime.reverse();
+      humiOutStatus.reverse();
+      humiOutTime.reverse();
+      for(var i =0; i<<%=data3%>;i++){
+        config2.data.datasets[0].data.push(humiInStatus[i]);
+        config2.data.labels.push(humiInTime[i]);
+      }
+      for(var i =0; i<<%=data4%>;i++){
+        config1.data.datasets[0].data.push(humiOutStatus[i]);
+        config1.data.labels.push(humiOutTime[i]);
+      }
     initChart();
   };
 </script>
 <script src = "socket.io/socket.io.js"></script>
 <script>
 const socket = io.connect("http://localhost:3000");
-
-
-socket.on('Humi',(data,data2)=>{
-  for(var i=0;i<20;i++){
-      config2.data.labels[i]=(data[i].time);
-      config2.data.datasets[0].data[i]=data[i].status;
-      config1.data.labels[i]=(data2[i].time);
-      config1.data.datasets[0].data[i]=data2[i].status;
-    }
-    window.myLine1.update();
-    window.myLine2.update();
-})
 
 socket.on('arduinoHumi',(arduinoHumi)=>{
   console.log('Data from Arduino: '+arduinoHumi);
