@@ -3,8 +3,8 @@ const router = express.Router();
 const controller = require('./controller');
 
 
-router.get('/',controller.index);
-router.get('/login',controller.login);
+router.get('/dashboard',controller.index);
+router.get('/',controller.login);
 router.get('/door',controller.door);
 router.get('/light',controller.light);
 router.get('/aircon',controller.aircon);
