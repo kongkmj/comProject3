@@ -14,7 +14,7 @@ const io = require('socket.io')(http);
 
 const port =3000;
 const tcpPort= 5000;
-const tcpPort2 = 4444;
+const tcpPort2 = 11111;
 
 
 const server = net.createServer((client)=>{
