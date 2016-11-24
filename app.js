@@ -330,6 +330,9 @@ io.on('connection',(socket)=>{
   console.log('a user connected!');
   socket.on('chat message',function (msg) {
     //time
+    var now = new Date();
+    var hour = now.getHours();
+    var min = now.getMinutes();
     if(hour>=12){
       hour = '오후 '+(hour-12);
     }
